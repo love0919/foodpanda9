@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>熊貓外送費用計算器</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      margin: 20px;
+      background: #fff;
+      color: #333;
+      text-align: center;
+    }
+    h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    .container {
+      max-width: 320px;
+      margin: auto;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      background: #fafafa;
+    }
+    label {
+      display: block;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .info {
+      font-size: 14px;
+      color: #555;
+      margin-top: 8px;
+      background: #f1f1f1;
+      padding: 6px;
+      border-radius: 6px;
+    }
+    .result {
+      margin-top: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #d63384;
+    }
+    .detail {
+      font-size: 13px;
+      color: #555;
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🐼 熊貓外送費用計算器</h2>
+
+    <label>取餐距離（公里）</label>
+    <input type="number" id="pickup" value="2.5" step="0.1" min="0">
+
+    <label>送餐距離（公里）</label>
+    <input type="number" id="delivery" value="2.5" step="0.1" min="0">
+
+    <label>倍率</label>
+    <input type="number" id="multiplier" value="1" step="0.1" min="0">
+
+    <div class="info" id="sameStoreInfo">同店夾單金額：30 元</div>
+
+    <div class="result" id="total">總費用：30 元</div>
+    <div class="detail" id="detail"></div>
+  </div>
+
+  <script>
+    const pickup = document.getElementById('pickup');
+    const delivery = document.getElementById('delivery');
+    const multiplier = document.getElementById('multiplier');
+    const total = document.getElementById('total');
+    const detail = document.getElementById('detail');
+    const sameStoreInfo = document.getElementById('sameStoreInfo');
+
+    function calc() {
+      const multi = parseFloat(multiplier.value || 1);
+
+      // 計算基本費
+      const base = 30 * multi;
+      // 計算同店夾單費（不低於30）
+      const sameStoreBase = Math.max(30, base - 10 * multi);
+      sameStoreInfo.textContent = `同店夾單金額：${sameStoreBase.toFixed(0)} 元`;
+
+      const pickupExtra = Math.max(0, pickup.value - 2.5) * 15;
+      const deliveryExtra = Math.max(0, delivery.value - 2.5) * 15;
+      const sum = base + pickupExtra + deliveryExtra;
+
+      total.textContent = `總費用：${sum.toFixed(0)} 元`;
+      detail.textContent =
+        `(基本費 ${base.toFixed(0)} + 取餐加收 ${pickupExtra.toFixed(0)} + 送餐加收 ${deliveryExtra.toFixed(0)})`;
+    }
+
+    [pickup, delivery, multiplier].forEach(e => e.addEventListener('input', calc));
+    calc(); // 初始載入時計算
+  </script>
+</body>
+</html>
